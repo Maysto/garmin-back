@@ -20,6 +20,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    relatives: {
+        type: Array,
+        required: false
+    }
 
 })
 
