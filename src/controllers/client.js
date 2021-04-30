@@ -2,8 +2,8 @@
 const getAll = async () => {
     try {
 
-        const db = dbClient.db("client");
-        const coll = db.collection("people");
+        const db = dbClient.db("Projet-Garmin");
+        const coll = db.collection("users");
 
         const querry = await coll.find({}).toArray();
 
@@ -18,8 +18,8 @@ const getAll = async () => {
 const createOne = async (document) => {
 
     try {
-        const db = dbClient.db("client");
-        const coll = db.collection("people");
+        const db = dbClient.db("Projet-Garmin");
+        const coll = db.collection("users");
 
         const p = await coll.insertOne(document);
 
@@ -34,8 +34,8 @@ const deleteOne = async (id) => {
 
     try {
 
-        const db = dbClient.db("client");
-        const coll = db.collection("people");
+        const db = dbClient.db("Projet-Garmin");
+        const coll = db.collection("users");
 
         const target = { _id: new mongo.ObjectId(id) };
 
@@ -51,8 +51,8 @@ const deleteOne = async (id) => {
 const updateOne = async (id,document) => {
     try {
 
-        const db = dbClient.db("client");
-        const coll = db.collection("people");
+        const db = dbClient.db("Projet-Garmin");
+        const coll = db.collection("users");
 
         const myquerry = { _id: new mongo.ObjectId(id) };
 
