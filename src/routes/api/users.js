@@ -62,7 +62,7 @@ router.post('/register', (req, res) => {
  * @access Public
  */
 router.post('/login', (req, res) => {
-    User.findOne({ email : req.body.email}).then(user => {
+    User.findOne({ email: req.body.email }).then(user => {
         if (!user) {
             return res.status(404).json({
                 msg: "Email is not found",
@@ -97,12 +97,44 @@ router.post('/login', (req, res) => {
     });
 });
 
+
 /**
- * @route POST api/users/dashboard
- * @desc Return the User's dashboard
+ * @route POST api/users/update
+ * @desc Update the user's relatives
  * @access Public
- */
-router.get('/dashboard',passport.authenticate('jwt', { session: false }), (req, res) => {
+*/
+router.post('/update', (req, res) => {
+
+    let {
+        _id,
+        relatives
+    } = req.body;
+
+    const query = { "_id" : _id }
+
+    const updateDoc = {
+        $set: {
+            "relatives": relatives
+        }
+    }
+
+    const options = { "upsert": false };
+
+    const res = await User.updateOne(query, updateDoc,options).then(result => {
+        const { matchedCount, modifiedCount } = result;
+        if (matchedCount && modifiedCount) {
+            console.log(`Successfully updated user's relatives`);
+        }
+    }).catch(err => console.error(`Failed to add relatives: ${err}`));
+
+});
+
+/**
+ * @route GET api/users/dashboard
+ * @desc Return the User's dashboard
+ * @access Authentified users
+*/
+router.get('/dashboard', passport.authenticate('jwt', { session: false }), (req, res) => {
     return res.json({
         user: req.user
     })

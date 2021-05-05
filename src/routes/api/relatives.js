@@ -31,7 +31,8 @@ router.post('/addOne', (req, res) => {
     newRelative.save().then(relative => {
         return res.status(201).json({
             succes: true,
-            msg: "Relative created"
+            relativeID: relative._id,                            // send back the id to update the user's relatives list.
+            msg: "Relative with the id : " + relative._id + "created"
         })
     })
 });
