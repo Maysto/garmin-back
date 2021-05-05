@@ -34,7 +34,7 @@ mongoose.connect(db, { useNewUrlParser: true }).then(() => {
 
 //routes
 app.use('/api/users', users);
-app.use('api/relatives', relatives);
+app.use('/api/relatives', relatives);
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);

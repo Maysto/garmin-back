@@ -1,8 +1,9 @@
+const { Int32 } = require("bson");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const relativeSchema = new Schema ({
-    fristname: {
+    firstname: {
         type: String,
         required: true        
     },
@@ -11,7 +12,7 @@ const relativeSchema = new Schema ({
         required: true
     },
     age:{
-        type: Int32,
+        type: Number,
         required: true
     },
     gender:{
@@ -19,11 +20,11 @@ const relativeSchema = new Schema ({
         required: true
     },
     height:{
-        type: Int32,
+        type: Number,
         required: true
     },
     weight:{
-        type: Int32,
+        type: Number,
         required: true
     },
     garminData:{
