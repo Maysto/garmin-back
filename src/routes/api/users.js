@@ -110,7 +110,7 @@ router.post('/update', (req, res) => {
         relatives
     } = req.body;
 
-    const query = { "_id" : _id }
+    const target = { "_id" : _id }
 
     const updateDoc = {
         $set: {
@@ -118,14 +118,15 @@ router.post('/update', (req, res) => {
         }
     }
 
-    const options = { "upsert": false };
-
-    const res = await User.updateOne(query, updateDoc,options).then(result => {
-        const { matchedCount, modifiedCount } = result;
-        if (matchedCount && modifiedCount) {
-            console.log(`Successfully updated user's relatives`);
+    User.updateOne(target, updateDoc, (err) => {
+        if (err) {
+            console.log(err);
         }
-    }).catch(err => console.error(`Failed to add relatives: ${err}`));
+        return res.status(200).json({
+            success: true,
+            msg: "relatives list updated succesfully"
+        })
+    })
 
 });
 
