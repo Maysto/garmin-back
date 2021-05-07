@@ -37,4 +37,29 @@ router.post('/addOne', (req, res) => {
     })
 });
 
+/**
+ * @route GET api/relatives/getOne
+ * @desc return a relative researched by ID
+ * @access Public
+*/
+router.get('/getOne', (req, res) => {
+
+    let _id = req.body;
+
+    const target = { "_id": _id }
+
+    Relative.findOne(target).then(result => {
+        if (result) {
+            return res.status(200).json({
+                success: true,
+                relative: result,
+                msg: "Found the relative : " + result._id
+            });
+        } else {
+            console.log("No document matches the provided query.");
+        }
+    }).catch(err => console.error(`Failed to find document: ${err}`));
+
+});
+
 module.exports = router;
