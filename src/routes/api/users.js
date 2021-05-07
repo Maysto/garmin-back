@@ -141,4 +141,18 @@ router.get('/dashboard', passport.authenticate('jwt', { session: false }), (req,
     })
 });
 
+
+/**
+ * @route GET api/users/
+ * @access Public
+*/
+
+router.get('/:email', async (req, res) => {
+    const {email} = req.params;
+  
+    const user = await User.findOne({"email":email});
+    console.log(user)
+    res.send(user)
+});
+
 module.exports = router;

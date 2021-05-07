@@ -62,4 +62,38 @@ router.get('/getOne', (req, res) => {
 
 });
 
+
+/**
+ * @route GET api/relatives/
+ * @desc return a relative researched by ID
+ * @access Public
+*/
+
+router.get('/', async (req, res) => {
+
+    try {
+        const list = await Relative.find();
+        res.send(list)
+    } catch (error) {
+        res.send(error)
+    }
+
+});
+
+
+/**
+ * @route GET api/relatives/
+ * @desc return a relative researched by ID
+ * @access Public
+*/
+
+router.get('/:id', async (req, res) => {
+    const {id} = req.params;
+  
+    const relative = await Relative.findOne({"_id":id});
+    res.send(relative)
+});
+
+
+
 module.exports = router;
