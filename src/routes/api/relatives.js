@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Relative = require('../../model/Relative');
+const User = require('../../model/User');
 
 /**
  * @route POST api/relatives/addOne
@@ -10,6 +11,7 @@ const Relative = require('../../model/Relative');
 router.post('/addOne', (req, res) => {
 
     let {
+        userEmail,
         firstname,
         lastname,
         age,
@@ -18,6 +20,7 @@ router.post('/addOne', (req, res) => {
         weight
     } = req.body
 
+    const target = { "email": userEmail }
 
     newRelative = new Relative({
         firstname,
@@ -28,13 +31,20 @@ router.post('/addOne', (req, res) => {
         weight
     });
 
+    User.findOne(target).then(res => {
+        res.relatives.push(newRelative);
+        res.save();
+    })
+
     newRelative.save().then(relative => {
+
         return res.status(201).json({
             succes: true,
-            relativeID: relative._id,                            // send back the id to update the user's relatives list.
-            msg: "Relative with the id : " + relative._id + "created"
-        })
-    })
+            relativeID: relative._id,                       // Send back the id to update the user's relatives list.
+            msg: "Relative with the id : " + relative._id + " created"
+        });
+    });
+    
 });
 
 /**
