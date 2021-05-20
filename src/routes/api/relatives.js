@@ -17,7 +17,8 @@ router.post('/addOne', (req, res) => {
         age,
         gender,
         height,
-        weight
+        weight,
+        consumerSecret
     } = req.body
 
     const target = { "email": userEmail }
@@ -28,7 +29,8 @@ router.post('/addOne', (req, res) => {
         age,
         gender,
         height,
-        weight
+        weight,
+        consumerSecret
     });
 
     User.findOne(target).then(res => {

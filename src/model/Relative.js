@@ -30,6 +30,10 @@ const relativeSchema = new Schema ({
     garminData:{
         type: Array,
         required: false
+    },
+    consumerSecret:{
+        type: String,
+        required: true
     }
 });
 
