@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Create the User Schema
 const UserSchema = new Schema({
-    
+
     firstname: {
         type: String,
         required: true
@@ -22,6 +22,10 @@ const UserSchema = new Schema({
     },
     relatives: {
         type: Array,
+        required: false
+    },
+    premium: {
+        type: Boolean,
         required: false
     }
 

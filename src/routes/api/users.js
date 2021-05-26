@@ -102,7 +102,7 @@ router.post('/login', (req, res) => {
  * @route POST api/users/update
  * @desc Update the user's relatives
  * @access Public
-*/
+ */
 router.post('/update', (req, res) => {
 
     let {
@@ -110,7 +110,7 @@ router.post('/update', (req, res) => {
         relatives
     } = req.body;
 
-    const target = { "_id" : _id }
+    const target = { "_id": _id }
 
     const updateDoc = {
         $set: {
@@ -134,7 +134,7 @@ router.post('/update', (req, res) => {
  * @route GET api/users/dashboard
  * @desc Return the User's dashboard
  * @access Authentified users
-*/
+ */
 router.get('/dashboard', passport.authenticate('jwt', { session: false }), (req, res) => {
     return res.json({
         user: req.user
@@ -145,12 +145,12 @@ router.get('/dashboard', passport.authenticate('jwt', { session: false }), (req,
 /**
  * @route GET api/users/
  * @access Public
-*/
+ */
 
-router.get('/:email', async (req, res) => {
-    const {email} = req.params;
-  
-    const user = await User.findOne({"email":email});
+router.get('/:email', async(req, res) => {
+    const { email } = req.params;
+
+    const user = await User.findOne({ "email": email });
     console.log(user)
     res.send(user)
 });
