@@ -19,6 +19,8 @@ router.post('/register', (req, res) => {
         password
     } = req.body
 
+    let premium = false;
+
     console.log(req.body);
 
     User.findOne({
@@ -36,7 +38,8 @@ router.post('/register', (req, res) => {
         firstname,
         lastname,
         email,
-        password
+        password,
+        premium
     });
 
     // Hash the password
