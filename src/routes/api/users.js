@@ -106,7 +106,7 @@ router.post('/login', (req, res) => {
  * @desc Update the user's infos
  * @access Public
  */
-router.post('/update', (req, res) => {
+router.post('/update', passport.authenticate('jwt', { session: false }), (req, res) => {
 
     let {
         _id,
