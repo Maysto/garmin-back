@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const key = require('../../config/keys').secret
 const passport = require('passport');
 const User = require('../../model/User');
+const Relative = require('../../model/Relative');
 
 /**
  * @route POST api/users/register
@@ -110,16 +111,34 @@ router.post('/update', passport.authenticate('jwt', { session: false }), (req, r
 
     let {
         _id,
-        relatives,
+        relative,
         premium
     } = req.body;
+
+    let firstname = relative[0];
+    let lastname = relative[1];
+    let age = relative[2];
+    let gender = relative[3];
+    let height = relative[4];
+    let weight = relative[5];
+
+    newRelative = new Relative({
+        firstname,
+        lastname,
+        age,
+        gender,
+        height,
+        weight,
+    });
 
     const target = { "_id": _id }
 
     const updateDoc = {
         $set: {
-            "relatives": relatives,
             "premium": premium
+        },
+        $push: {
+            "relatives": newRelative
         }
     }
 
