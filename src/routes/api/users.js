@@ -103,21 +103,23 @@ router.post('/login', (req, res) => {
 
 /**
  * @route POST api/users/update
- * @desc Update the user's relatives
+ * @desc Update the user's infos
  * @access Public
  */
 router.post('/update', (req, res) => {
 
     let {
         _id,
-        relatives
+        relatives,
+        premium
     } = req.body;
 
     const target = { "_id": _id }
 
     const updateDoc = {
         $set: {
-            "relatives": relatives
+            "relatives": relatives,
+            "premium": premium
         }
     }
 
