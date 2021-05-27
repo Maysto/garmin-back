@@ -21,7 +21,6 @@ router.post('/register', (req, res) => {
         password
     } = req.body
 
-    let premium = false;
 
     console.log(req.body);
 
@@ -41,7 +40,6 @@ router.post('/register', (req, res) => {
         lastname,
         email,
         password,
-        premium
     });
 
     // Hash the password
@@ -116,7 +114,6 @@ router.post('/updateRelative', async(req, res) => {
     } = req.body;
 
     try {
-        console.log(email, id);
 
         const sharedRelative = await Relative.findOne({ "_id": id });
 
@@ -132,6 +129,27 @@ router.post('/updateRelative', async(req, res) => {
     res.send({
         success: true,
     });
+});
+
+/**
+ * @route POST api/users/updatePremium
+ * @desc Update the user's premium status
+ * @access Public
+ */
+router.post('/updatePremium', passport.authenticate('jwt', { session: false }), async(req, res) => {
+    let {
+        premiumDate,
+        email
+    } = req.body;
+
+    try {
+        await User.findOne({ "email": email }).then(user => {
+            user.premium = premiumDate;
+            user.save();
+        });
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 /**
