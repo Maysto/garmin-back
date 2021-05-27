@@ -6,6 +6,7 @@ const key = require('../../config/keys').secret
 const passport = require('passport');
 const User = require('../../model/User');
 const Relative = require('../../model/Relative');
+const { findOne } = require('../../model/User');
 
 /**
  * @route POST api/users/register
@@ -103,56 +104,21 @@ router.post('/login', (req, res) => {
 
 
 /**
- * @route POST api/users/update
- * @desc Update the user's infos
+ * @route POST api/users/updateRelative
+ * @desc Update the user's relative
  * @access Public
- */
-router.post('/update', passport.authenticate('jwt', { session: false }), (req, res) => {
+ 
+router.post('/updateRelative', async(req, res) => {
 
     let {
-        _id,
-        relative,
-        premium
+        email,
+        id
     } = req.body;
 
-    let firstname = relative[0];
-    let lastname = relative[1];
-    let age = relative[2];
-    let gender = relative[3];
-    let height = relative[4];
-    let weight = relative[5];
-
-    newRelative = new Relative({
-        firstname,
-        lastname,
-        age,
-        gender,
-        height,
-        weight,
-    });
-
-    const target = { "_id": _id }
-
-    const updateDoc = {
-        $set: {
-            "premium": premium
-        },
-        $push: {
-            "relatives": newRelative
-        }
-    }
-
-    User.updateOne(target, updateDoc, (err) => {
-        if (err) {
-            console.log(err);
-        }
-        return res.status(200).json({
-            success: true,
-            msg: "relatives list updated succesfully"
-        })
-    })
-
+    console.log(email, id)
 });
+NE MARCHE PAS POUR LE MOMENT
+*/
 
 /**
  * @route GET api/users/dashboard
