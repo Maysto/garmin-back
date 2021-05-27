@@ -31,10 +31,6 @@ const relativeSchema = new Schema ({
         type: Array,
         required: false
     },
-    consumerSecret:{
-        type: String,
-        required: true
-    }
 });
 
 module.exports = Relative = mongoose.model('relatives', relativeSchema);

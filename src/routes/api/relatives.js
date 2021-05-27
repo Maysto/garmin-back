@@ -18,7 +18,6 @@ router.post('/addOne', (req, res) => {
         gender,
         height,
         weight,
-        consumerSecret
     } = req.body
 
     const target = { "email": userEmail }
@@ -30,7 +29,6 @@ router.post('/addOne', (req, res) => {
         gender,
         height,
         weight,
-        consumerSecret
     });
 
     User.findOne(target).then(res => {
@@ -103,6 +101,7 @@ router.get('/:id', async (req, res) => {
     const {id} = req.params;
   
     const relative = await Relative.findOne({"_id":id});
+    console.log(relative)
     res.send(relative)
 });
 
