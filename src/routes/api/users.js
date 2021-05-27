@@ -107,7 +107,7 @@ router.post('/login', (req, res) => {
  * @route POST api/users/updateRelative
  * @desc Update the user's relative
  * @access Public
- 
+ */
 router.post('/updateRelative', async(req, res) => {
 
     let {
@@ -115,10 +115,24 @@ router.post('/updateRelative', async(req, res) => {
         id
     } = req.body;
 
-    console.log(email, id)
+    try {
+        console.log(email, id);
+
+        const sharedRelative = await Relative.findOne({ "_id": id });
+
+        await User.findOne({ "email": email }).then(user => {
+
+            user.relatives.push(sharedRelative);
+            return user.save();
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+    res.send({
+        success: true,
+    });
 });
-NE MARCHE PAS POUR LE MOMENT
-*/
 
 /**
  * @route GET api/users/dashboard
