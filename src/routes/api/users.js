@@ -18,9 +18,11 @@ router.post('/register', (req, res) => {
         firstname,
         lastname,
         email,
-        password
+        password,
     } = req.body
 
+    let premium = false;
+    let premiumDate = null;
 
     console.log(req.body);
 
@@ -40,6 +42,8 @@ router.post('/register', (req, res) => {
         lastname,
         email,
         password,
+        premium,
+        premiumDate
     });
 
     // Hash the password
@@ -138,15 +142,20 @@ router.post('/updateRelative', async(req, res) => {
  */
 router.post('/updatePremium', passport.authenticate('jwt', { session: false }), async(req, res) => {
     let {
+        premium,
         premiumDate,
         email
     } = req.body;
 
     try {
-        await User.findOne({ "email": email }).then(user => {
-            user.premium = premiumDate;
+
+        const user = await User.findOne({ "email": email }).then(user => {
+            user.premium = premium;
+            user.premiumDate = premiumDate;
             user.save();
         });
+        res.send(user);
+        
     } catch (error) {
         console.log(error);
     }

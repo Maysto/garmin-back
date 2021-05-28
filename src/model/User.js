@@ -25,8 +25,11 @@ const UserSchema = new Schema({
         required: false
     },
     premium: {
+        type: Boolean,
+        required: false
+    },
+    premiumDate: {
         type: Date,
-        default: null,
         required: false
     }
 
