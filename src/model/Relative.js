@@ -27,8 +27,8 @@ const relativeSchema = new Schema({
         type: Number,
         required: true
     },
-    Stress: {
-        type: Map,
+    stress: {
+        type: Array,
         required: false
     },
 });

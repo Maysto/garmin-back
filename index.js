@@ -8,7 +8,8 @@ const PORT = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const users = require('./src/routes/api/users');
-const relatives = require('./src/routes/api/relatives')
+const relatives = require('./src/routes/api/relatives');
+const gramin = require('./src/routes/api/garmin');
 const passport = require('passport');
 
 app.use(bodyParser.urlencoded({
@@ -35,6 +36,7 @@ mongoose.connect(db, { useNewUrlParser: true }).then(() => {
 //routes
 app.use('/api/users', users);
 app.use('/api/relatives', relatives);
+app.use('/api/garmin', gramin);
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);

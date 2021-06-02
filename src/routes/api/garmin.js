@@ -48,6 +48,17 @@ router.post('/Sleep', (req, res) => {
  * @access Public
  * @todo 
  */
-router.post('/Stress', (req, res) => {
-    const id = "60a050e52371f40015f4bd69";
+router.post('/Stress', async(req, res) => {
+    const id = "60b781674e597a1b8432ade0";
+    let stressData = req.body;
+    await Relative.findOne({ "_id": id }).then(rel => {
+        rel.stress.push(stressData);
+        rel.save();
+    });
+    return res.status(200).json({
+        succes: true,
+        msg: "Thanks for your datas salpu !"
+    });
 });
+
+module.exports = router;
