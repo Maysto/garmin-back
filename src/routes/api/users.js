@@ -6,7 +6,6 @@ const key = require('../../config/keys').secret
 const passport = require('passport');
 const User = require('../../model/User');
 const Relative = require('../../model/Relative');
-const { findOne } = require('../../model/User');
 
 /**
  * @route POST api/users/register
@@ -155,7 +154,7 @@ router.post('/updatePremium', passport.authenticate('jwt', { session: false }), 
             user.save();
         });
         res.send(user);
-        
+
     } catch (error) {
         console.log(error);
     }
@@ -174,7 +173,25 @@ router.get('/dashboard', passport.authenticate('jwt', { session: false }), (req,
 
 
 /**
- * @route GET api/users/
+ * @route GET api/users/getAll
+ * @access Public
+ */
+
+router.get('/getAll', async(req, res) => {
+    try {
+        const result = [];
+        const users = await User.find();
+        users.forEach(user => {
+            result.push(user);
+        });
+        res.send(result);
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+/**
+ * @route GET api/users/:email
  * @access Public
  */
 
