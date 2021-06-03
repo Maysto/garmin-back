@@ -1,3 +1,4 @@
+const { ObjectId } = require('bson');
 const express = require('express');
 const Relative = require('../../model/Relative');
 const User = require('../../model/User');
@@ -50,31 +51,28 @@ router.post('/Sleep', (req, res) => {
  * @todo 
  */
 router.post('/Stress', async(req, res) => {
-    const id = "60b7817560e599001523b0ce"; //des datas pour karim
+    const id = "60b81259bc85490015c30a27"; //des datas pour karim
     let stressData = req.body;
+
     await Relative.findOne({ "_id": id }).then(rel => {
         rel.stress.push(stressData);
         rel.save();
     });
 
-    try {
-        const cursor = await User.find();
-
-        cursor.forEach((user) => {
-            user.relatives.forEach((rel) => {
+    await User.find({ "relatives": { $elemMatch: { _id: ObjectId(id) } } }).then(list => {
+        list.forEach(async(user) => {
+            user.relatives.forEach(rel => {
                 if (rel._id == id) {
                     rel.stress.push(stressData);
                 }
             });
-            user.save();
-        });
-    } catch (error) {
-        console.error(error)
-    }
+            const promise = await user.save();
+            console.log(promise);
+        })
+    });
 
     return res.status(200).json({
-        succes: true,
-        msg: "Thanks for your datas salpu !"
+        success: true,
     });
 });
 

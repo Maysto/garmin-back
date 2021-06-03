@@ -179,12 +179,8 @@ router.get('/dashboard', passport.authenticate('jwt', { session: false }), (req,
 
 router.get('/getAll', async(req, res) => {
     try {
-        const result = [];
         const users = await User.find();
-        users.forEach(user => {
-            result.push(user);
-        });
-        res.send(result);
+        res.send(users);
     } catch (error) {
         console.log(error)
     }
