@@ -53,27 +53,26 @@ router.post('/Sleep', (req, res) => {
 router.post('/Stress', async(req, res) => {
     const id = "60b81259bc85490015c30a27"; //des datas pour karim
     let stressData = req.body;
+    const query = { "relatives": { $elemMatch: { _id: ObjectId(id) } } };
+
 
     await Relative.findOne({ "_id": id }).then(rel => {
         rel.stress.push(stressData);
         rel.save();
     });
 
-    await User.find({ "relatives": { $elemMatch: { _id: ObjectId(id) } } }).then(list => {
-        list.forEach(async(user) => {
-            user.relatives.forEach(rel => {
-                if (rel._id == id) {
-                    rel.stress.push(stressData);
-                }
-            });
-            const promise = await user.save();
-            console.log(promise);
-        })
-    });
+    try {
+        await User.updateMany(query, { $push: { "relatives.$[elem].stress": stressData } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(id) } }] }).then(() => {
+            return res.status(200).json({
+                success: true,
+                msg: "Manges ma crotte"
+            })
+        });
 
-    return res.status(200).json({
-        success: true,
-    });
+
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 module.exports = router;
