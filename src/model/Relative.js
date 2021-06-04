@@ -31,6 +31,18 @@ const relativeSchema = new Schema({
         type: Array,
         required: false
     },
+    sleep: {
+        type: Array,
+        required: false
+    },
+    activities: {
+        type: Array,
+        required: false
+    },
+    dailies: {
+        type: Array,
+        required: false
+    }
 });
 
 module.exports = Relative = mongoose.model('relatives', relativeSchema);

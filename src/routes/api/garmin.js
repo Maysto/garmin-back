@@ -10,18 +10,28 @@ const router = express.Router();
  * @access Public
  * @todo 
  */
-router.post('/Activities', (req, res) => {
+router.post('/Activities', async(req, res) => {
+    const id = "60b81259bc85490015c30a27";
+    let activityData = req.body;
+    const query = { "relatives": { $elemMatch: { _id: ObjectId(id) } } };
 
-});
 
-/**
- * @route POST api/garmin/ActivityDetail
- * @desc Endpoint for garmin to post the activity details of a relavtive
- * @access Public
- * @todo 
- */
-router.post('/ActivityDetail', (req, res) => {
+    await Relative.findOne({ "_id": id }).then(rel => {
+        rel.activities.push(activityData);
+        rel.save();
+    });
 
+    try {
+        await User.updateMany(query, { $push: { "relatives.$[elem].activities": activityData } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(id) } }] }).then(() => {
+            return res.status(200).json({
+                success: true,
+            })
+        });
+
+
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 /**
@@ -30,8 +40,28 @@ router.post('/ActivityDetail', (req, res) => {
  * @access Public
  * @todo 
  */
-router.post('/Dailies', (req, res) => {
+router.post('/Dailies', async(req, res) => {
+    const id = "60b81259bc85490015c30a27";
+    let dailiesData = req.body;
+    const query = { "relatives": { $elemMatch: { _id: ObjectId(id) } } };
 
+
+    await Relative.findOne({ "_id": id }).then(rel => {
+        rel.dailies.push(dailiesData);
+        rel.save();
+    });
+
+    try {
+        await User.updateMany(query, { $push: { "relatives.$[elem].dailies": dailiesData } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(id) } }] }).then(() => {
+            return res.status(200).json({
+                success: true,
+            })
+        });
+
+
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 /**
@@ -40,8 +70,28 @@ router.post('/Dailies', (req, res) => {
  * @access Public
  * @todo 
  */
-router.post('/Sleep', (req, res) => {
+router.post('/Sleep', async(req, res) => {
+    const id = "60b81259bc85490015c30a27";
+    let sleepData = req.body;
+    const query = { "relatives": { $elemMatch: { _id: ObjectId(id) } } };
 
+
+    await Relative.findOne({ "_id": id }).then(rel => {
+        rel.sleep.push(sleepData);
+        rel.save();
+    });
+
+    try {
+        await User.updateMany(query, { $push: { "relatives.$[elem].sleep": sleepData } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(id) } }] }).then(() => {
+            return res.status(200).json({
+                success: true,
+            })
+        });
+
+
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 /**
@@ -51,7 +101,7 @@ router.post('/Sleep', (req, res) => {
  * @todo 
  */
 router.post('/Stress', async(req, res) => {
-    const id = "60b81259bc85490015c30a27"; //des datas pour karim
+    const id = "60b81259bc85490015c30a27";
     let stressData = req.body;
     const query = { "relatives": { $elemMatch: { _id: ObjectId(id) } } };
 
@@ -65,7 +115,6 @@ router.post('/Stress', async(req, res) => {
         await User.updateMany(query, { $push: { "relatives.$[elem].stress": stressData } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(id) } }] }).then(() => {
             return res.status(200).json({
                 success: true,
-                msg: "Manges ma crotte"
             })
         });
 
