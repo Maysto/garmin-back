@@ -105,6 +105,41 @@ router.post('/login', (req, res) => {
 
 
 /**
+ * @route POST api/users/deleteRelative
+ * @desc Update the user's relative
+ * @access Public
+ */
+router.post('/deleteRelative', async(req, res) => {
+
+    let {
+        email,
+        id
+    } = req.body;
+
+    try {
+
+        const query = { "email": email }
+        const updatedUser = await User.findOne(query);
+
+        updatedUser.relatives.forEach(element => {
+            if (element._id == id) {
+                updatedUser.relatives.splice(updatedUser.relatives.indexOf(element), 1);
+            }
+        });
+
+        await User.updateOne(query, { $set: { "relatives": updatedUser.relatives } }).then(() => {
+            return res.status(200).json({
+                success: true,
+            })
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
+/**
  * @route POST api/users/updateRelative
  * @desc Update the user's relative
  * @access Public
@@ -118,11 +153,11 @@ router.post('/updateRelative', async(req, res) => {
 
     try {
 
-        const sharedRelative = await Relative.findOne({ "_id": id });
+        const deletedRelative = await Relative.findOne({ "_id": id });
 
         await User.findOne({ "email": email }).then(user => {
 
-            user.relatives.push(sharedRelative);
+            user.relatives.push(deletedRelative);
             return user.save();
         });
 
