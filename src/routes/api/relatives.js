@@ -64,7 +64,7 @@ router.post('/addDoctor', async(req, res) => {
         phone
     } = req.body;
 
-    const query = { "relatives": { "_id": relativeId } };
+    const query = { "relatives": { $elemMatch: { _id: ObjectId(relativeId) } } };
 
     const newDoctor = new Doctor({
         firstname,
@@ -72,15 +72,17 @@ router.post('/addDoctor', async(req, res) => {
         phone,
         specialities
     });
+
     try {
         await User.updateOne(query, { $push: { "relatives.$[elem].doctors": newDoctor } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(relativeId) } }] }).then(() => {
             res.status(200).json({
-                success: true
+                success: true,
             });
         });
     } catch (error) {
         console.error(error)
     }
+
 });
 
 /**
