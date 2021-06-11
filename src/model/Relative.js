@@ -1,4 +1,3 @@
-const { Int32 } = require("bson");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -42,6 +41,10 @@ const relativeSchema = new Schema({
     dailies: {
         type: Array,
         required: false
+    },
+    doctors: {
+        type: Array,
+        required: false,
     }
 });
 

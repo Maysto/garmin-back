@@ -1,4 +1,6 @@
 const express = require('express');
+const { ObjectId } = require('bson');
+const Doctor = require('../../model/Doctor');
 const router = express.Router();
 const Relative = require('../../model/Relative');
 const User = require('../../model/User');
@@ -7,7 +9,7 @@ const User = require('../../model/User');
  * @route POST api/relatives/addOne
  * @desc Create a relative and associate hin to the user that made the relative's profile
  * @access Public
-*/
+ */
 router.post('/addOne', (req, res) => {
 
     let {
@@ -40,18 +42,52 @@ router.post('/addOne', (req, res) => {
 
         return res.status(201).json({
             succes: true,
-            relativeID: relative._id,                       // Send back the id to update the user's relatives list.
+            relativeID: relative._id, // Send back the id to update the user's relatives list.
             msg: "Relative with the id : " + relative._id + " created"
         });
     });
-    
+
+});
+
+/**
+ * @route POST api/relatives/addDoctor
+ * @desc add a Doctor associated to a relative
+ * @access Public
+ */
+router.post('/addDoctor', async(req, res) => {
+
+    let {
+        relativeId,
+        firstname,
+        lastname,
+        specialities,
+        phone
+    } = req.body;
+
+    const query = { "relatives": { "_id": relativeId } };
+
+    const newDoctor = new Doctor({
+        firstname,
+        lastname,
+        phone,
+        specialities
+    });
+    try {
+        await User.updateOne(query, { $push: { "relatives.$[elem].doctors": newDoctor } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(relativeId) } }] }).then(() => {
+            res.status(200).json({
+                success: true
+            });
+        });
+    } catch (error) {
+        console.error(error)
+    }
 });
 
 /**
  * @route GET api/relatives/getOne
  * @desc return a relative researched by ID
  * @access Public
-*/
+ */
 router.get('/getOne', (req, res) => {
 
     let _id = req.body;
@@ -77,9 +113,9 @@ router.get('/getOne', (req, res) => {
  * @route GET api/relatives/
  * @desc return a relative researched by ID
  * @access Public
-*/
+ */
 
-router.get('/', async (req, res) => {
+router.get('/', async(req, res) => {
 
     try {
         const list = await Relative.find();
@@ -95,15 +131,16 @@ router.get('/', async (req, res) => {
  * @route GET api/relatives/
  * @desc return a relative researched by ID
  * @access Public
-*/
+ */
 
-router.get('/:id', async (req, res) => {
-    const {id} = req.params;
-  
-    const relative = await Relative.findOne({"_id":id});
+router.get('/:id', async(req, res) => {
+    const { id } = req.params;
+
+    const relative = await Relative.findOne({ "_id": id });
     console.log(relative)
     res.send(relative)
 });
+
 
 
 
