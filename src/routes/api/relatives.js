@@ -98,8 +98,7 @@ router.post('/addEvent', async(req, res) => {
         nameEvent,
         startEvent,
         endEvent,
-        color,
-        timed
+        color
     } = req.body;
 
     const query = { "relatives": { $elemMatch: { _id: ObjectId(relativeId) } } };
@@ -108,8 +107,7 @@ router.post('/addEvent', async(req, res) => {
         nameEvent,
         startEvent,
         endEvent,
-        color,
-        timed
+        color
     });
 
     try {
