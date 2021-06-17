@@ -4,6 +4,7 @@ const Doctor = require('../../model/Doctor');
 const router = express.Router();
 const Relative = require('../../model/Relative');
 const User = require('../../model/User');
+const Event = require('../../model/Event');
 
 /**
  * @route POST api/relatives/addOne
@@ -75,6 +76,44 @@ router.post('/addDoctor', async(req, res) => {
 
     try {
         await User.updateOne(query, { $push: { "relatives.$[elem].doctors": newDoctor } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(relativeId) } }] }).then(() => {
+            res.status(200).json({
+                success: true,
+            });
+        });
+    } catch (error) {
+        console.error(error)
+    }
+
+});
+
+/**
+ * @route POST api/relatives/addEvent
+ * @desc add an Event associated to a relative's calendar
+ * @access Public
+ */
+router.post('/addEvent', async(req, res) => {
+
+    let {
+        relativeId,
+        nameEvent,
+        startEvent,
+        endEvent,
+        color,
+        timed
+    } = req.body;
+
+    const query = { "relatives": { $elemMatch: { _id: ObjectId(relativeId) } } };
+
+    const newEvent = new Event({
+        nameEvent,
+        startEvent,
+        endEvent,
+        color,
+        timed
+    });
+
+    try {
+        await User.updateOne(query, { $push: { "relatives.$[elem].events": newEvent } }, { arrayFilters: [{ "elem._id": { $eq: ObjectId(relativeId) } }] }).then(() => {
             res.status(200).json({
                 success: true,
             });

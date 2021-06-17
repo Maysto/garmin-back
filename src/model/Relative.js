@@ -45,6 +45,10 @@ const relativeSchema = new Schema({
     doctors: {
         type: Array,
         required: false,
+    },
+    events: {
+        type: Array,
+        required: false
     }
 });
 
