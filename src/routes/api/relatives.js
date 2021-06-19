@@ -1,10 +1,28 @@
 const express = require('express');
 const { ObjectId } = require('bson');
 const Doctor = require('../../model/Doctor');
+const Crypto = require("../../config/Sha1Encode");
 const router = express.Router();
-const Relative = require('../../model/Relative');
-const User = require('../../model/User');
+const Relative = require("../../model/Relative");
+const User = require("../../model/User");
+const pack = require("locutus/php/misc/pack");
+const btoa = require('btoa');
+const fetch = require("node-fetch");
+const { route } = require("./users");
 const Event = require('../../model/Event');
+
+let makeid = function (length) {
+  var result = [];
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result.push(
+      characters.charAt(Math.floor(Math.random() * charactersLength))
+    );
+  }
+  return result.join("");
+};
 
 /**
  * @route POST api/relatives/addOne
@@ -13,26 +31,21 @@ const Event = require('../../model/Event');
  */
 router.post('/addOne', (req, res) => {
 
-    let {
-        userEmail,
-        firstname,
-        lastname,
-        age,
-        gender,
-        height,
-        weight,
-    } = req.body
+  const target = { email: userEmail };
 
-    const target = { "email": userEmail }
+  newRelative = new Relative({
+    firstname,
+    lastname,
+    age,
+    gender,
+    height,
+    weight,
+  });
 
-    newRelative = new Relative({
-        firstname,
-        lastname,
-        age,
-        gender,
-        height,
-        weight,
-    });
+  User.findOne(target).then((res) => {
+    res.relatives.push(newRelative);
+    res.save();
+  });
 
     User.findOne(target).then(res => {
         res.relatives.push(newRelative);
@@ -129,24 +142,22 @@ router.post('/addEvent', async(req, res) => {
  */
 router.get('/getOne', (req, res) => {
 
-    let _id = req.body;
+  const target = { _id: _id };
 
-    const target = { "_id": _id }
-
-    Relative.findOne(target).then(result => {
-        if (result) {
-            return res.status(200).json({
-                success: true,
-                relative: result,
-                msg: "Found the relative : " + result._id
-            });
-        } else {
-            console.log("No document matches the provided query.");
-        }
-    }).catch(err => console.error(`Failed to find document: ${err}`));
-
+  Relative.findOne(target)
+    .then((result) => {
+      if (result) {
+        return res.status(200).json({
+          success: true,
+          relative: result,
+          msg: "Found the relative : " + result._id,
+        });
+      } else {
+        console.log("No document matches the provided query.");
+      }
+    })
+    .catch((err) => console.error(`Failed to find document: ${err}`));
 });
-
 
 /**
  * @route GET api/relatives/
@@ -154,17 +165,65 @@ router.get('/getOne', (req, res) => {
  * @access Public
  */
 
-router.get('/', async(req, res) => {
 
-    try {
-        const list = await Relative.find();
-        res.send(list)
-    } catch (error) {
-        res.send(error)
-    }
 
+router.get("/confirmRequest", async (req, res) => {
+
+  console.log("requête reçue");
+  
+  let requestOptions = {
+    method: "POST",
+    Accept: "application/text",
+  };
+
+  let currentURL =
+    "https://connectapi.garmin.com/oauth-service/oauth/request_token?";
+  let oauth_consumer_key = "50658631-7f95-428e-995a-1d4a84f81255";
+  let oauth_consumer_secret = "qs6QrMQtQW0W2nOo08ipzlL9sZwupmRJyjF";
+  let oauth_nonce = makeid(15);
+  let oauth_timestamp = Math.round(Date.now() / 1000);
+  let baseString =
+    "POST&" +
+    encodeURIComponent(
+      "https://connectapi.garmin.com/oauth-service/oauth/request_token"
+    ) +
+    "&" +
+    encodeURIComponent(
+      "oauth_consumer_key=" +
+        oauth_consumer_key +
+        "&oauth_nonce=" +
+        oauth_nonce +
+        "&oauth_signature_method=HMAC-SHA1" +
+        "&oauth_timestamp=" +
+        oauth_timestamp +
+        "&oauth_version=1.0"
+    );
+  let oauth_signature_base = Crypto.sha1_hmac(
+    baseString,
+    oauth_consumer_secret + "&"
+  );
+  let oauth_signature = encodeURIComponent(
+    btoa(pack("H*", oauth_signature_base))
+  );
+  console.log('Avant requête');
+
+  fetch(
+    currentURL +
+      "oauth_consumer_key=" +
+      oauth_consumer_key +
+      "&oauth_nonce=" +
+      oauth_nonce +
+      "&oauth_signature_method=HMAC-SHA1" +
+      "&oauth_timestamp=" +
+      oauth_timestamp +
+      "&oauth_version=1.0" +
+      "&oauth_signature=" +
+      oauth_signature,
+    requestOptions
+  )
+    .then((response) => console.log(response.status))
+    .then((response) => console.log(response.text()));
 });
-
 
 /**
  * @route GET api/relatives/
@@ -179,8 +238,5 @@ router.get('/:id', async(req, res) => {
     console.log(relative)
     res.send(relative)
 });
-
-
-
 
 module.exports = router;
